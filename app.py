@@ -16,15 +16,15 @@ import random
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 import re
-import nltk
 import sklearn
+import nltk
 from nltk.corpus import wordnet
 from functools import partial
 import pickle
 import time
 import warnings
 warnings.filterwarnings('ignore')
-data_dir = "./streamlit-hatefulmemedection/"
+data_dir = "/content/streamlit-hatefulmemedection/"
 SLANG_PATH = data_dir+"static/slang.txt"
 import webbrowser # inbuilt module
 
@@ -126,7 +126,7 @@ To see how it works, please click the button below!
 st.text("""""")
 github = st.button("👉🏼 Click Here To See How It Works")
 if github:
-	github_link = "https://github.com/surdebmalya/Cat-Or-Dog-Recognizer-Web-App-DL-streamlit"
+	github_link = "https://github.com/praveen-jalaja/streamlit-hatefulmemedection"
 	try:
 		webbrowser.open(github_link)
 	except:
@@ -156,10 +156,15 @@ def decontracted(phrase):
     phrase = re.sub(r"\'ve", " have", phrase)
     phrase = re.sub(r"\'m", " am", phrase)
     return phrase
+
+@st.cache()
+def download_wornet():
+  nltk.download('wordnet')
+
 @st.cache()
 def replaceElongated(word):
     """ Replaces an elongated word with its basic form, unless the word exists in the lexicon """
-    nltk.download('wordnet')
+    download_wornet()
     repeat_regexp = re.compile(r'(\w*)(\w)\2(\w*)')
     repl = r'\1\2\3'
     if wordnet.synsets(word):
@@ -193,7 +198,7 @@ def text_preprocessing(final):
 
 
 @st.cache(allow_output_mutation=True)
-def load_image_model():
+def load_model():
   image_model = tf.keras.applications.ResNet152V2(include_top=False,
                                                 weights='imagenet')
   new_input = image_model.input
@@ -311,7 +316,7 @@ def load_image(image_path):
 class_values = ["non-hateful","hateful"]
 @st.cache(allow_output_mutation=True)
 def evaluate(image,text):
-    image_features_extract_model, text_features_extract_model, encoder, decoder = load_image_model()
+    image_features_extract_model, text_features_extract_model, encoder, decoder = load_model()
     text = text_preprocessing([text])[0]
     attention_plot = np.zeros((1, attention_features_shape))
     hidden = decoder.reset_state(batch_size=1)
@@ -396,41 +401,15 @@ def generate_result(prediction):
 
 #=========================== Predict Button Clicked ==========================
 if submit:
-	try:
-		# Creating Directory
-		not_created = True
-		while not_created:
-			name_of_directory = random.choice(list(range(0, 1885211)))
-			try:
-				ROOT_DIR = os.path.abspath(os.curdir)
-				if str(name_of_directory) not in os.listdir(ROOT_DIR):
-					not_created = False
-					path = ROOT_DIR + '/' + str(name_of_directory)
-					os.mkdir(path)
-					# directory made!
-			except:
-				st.write("""
-					### ❗ Oops!!! Seems like it will not support in you OS!!!
-					""")
 
-		# save image on that directory
+  save_img("test_image.png", np.array(image))
 
-		save_img(path+"/test_image.png", np.array(image))
+  image_path = "test_image.png"
+  # Predicting
+  st.write("👁️ Predicting...")
+  pred, predicted_class = evaluate(image_path,text)
 
-		image_path = path+"/test_image.png"
-		# Predicting
-		st.write("👁️ Predicting...")
-		pred, predicted_class = evaluate(image_path,text)
-		# Delete the folder
-		dir_path = path
-
-		generate_result(predicted_class)
-
-
-	except:
-		st.write("""
-		### ❗ Please Select A Picture First!
-			""")
+  generate_result(predicted_class)
 
 
 
