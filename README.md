@@ -1,2 +1,2 @@
 # streamlit-hatefulmemedection
- web app for hateful meme detection
+ Description - web app for hateful meme detection
