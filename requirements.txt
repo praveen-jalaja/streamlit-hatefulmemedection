@@ -6,5 +6,4 @@ numpy
 pytest-shutil
 tensorflow_hub
 beautifulsoup4
-nltk
 
