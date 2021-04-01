@@ -5,25 +5,16 @@ import tensorflow_hub as hub
 from tensorflow.keras.preprocessing.image import save_img
 import tensorflow_text as text
 import shutil
-import pandas as pd
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import json
 import sys
 import random
-from tqdm import tqdm
 from bs4 import BeautifulSoup
 import re
-import sklearn
 import nltk
 from nltk.corpus import wordnet
 from functools import partial
-import pickle
-import time
-import warnings
-warnings.filterwarnings('ignore')
 data_dir = "/content/streamlit-hatefulmemedection/"
 SLANG_PATH = data_dir+"static/slang.txt"
 import webbrowser # inbuilt module
