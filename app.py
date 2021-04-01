@@ -12,8 +12,6 @@ import sys
 import random
 from bs4 import BeautifulSoup
 import re
-import nltk
-from nltk.corpus import wordnet
 from functools import partial
 data_dir = "/streamlit-hatefulmemedection/"
 SLANG_PATH = "static/slang.txt"
@@ -148,23 +146,6 @@ def decontracted(phrase):
     phrase = re.sub(r"\'m", " am", phrase)
     return phrase
 
-@st.cache()
-def download_wornet():
-  nltk.download('wordnet')
-
-@st.cache()
-def replaceElongated(word):
-    """ Replaces an elongated word with its basic form, unless the word exists in the lexicon """
-    download_wornet()
-    repeat_regexp = re.compile(r'(\w*)(\w)\2(\w*)')
-    repl = r'\1\2\3'
-    if wordnet.synsets(word):
-        return word
-    repl_word = repeat_regexp.sub(repl, word)
-    if repl_word != word:      
-        return replaceElongated(repl_word)
-    else:       
-        return repl_word
 
 with open(SLANG_PATH) as file:
     slang_map = dict(map(str.strip, line.partition('\t')[::2])
@@ -179,7 +160,7 @@ def text_preprocessing(final):
   preprocessed_text = []
   for sentance in final:
       sentance = BeautifulSoup(sentance, 'lxml').get_text()
-      sentance = replaceSlang(replaceElongated(sentance))
+      sentance = replaceSlang(sentance)
       sentance = decontracted(sentance)
       sentance = re.sub("\S*\d\S*", "", sentance).strip()
       sentance = re.sub('[^A-Za-z]+', ' ', sentance)
