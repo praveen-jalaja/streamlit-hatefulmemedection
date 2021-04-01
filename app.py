@@ -16,7 +16,7 @@ import nltk
 from nltk.corpus import wordnet
 from functools import partial
 data_dir = "/streamlit-hatefulmemedection/"
-SLANG_PATH = "static\\slang.txt"
+SLANG_PATH = "/static/slang.txt"
 import webbrowser # inbuilt module
 
 image_shape = (256,256,3)
@@ -35,8 +35,8 @@ HateFul Meme Detector
 
 #================================= Title Image ===========================
 st.text("""""")
-img_path_list = ["static\\image_1.jpg",
-				"static\\image_2.jpg"]
+img_path_list = ["/static/image_1.jpg",
+				"/static/image_2.jpg"]
 index = random.choice([0,1])
 image = Image.open(img_path_list[index])
 st.image(
