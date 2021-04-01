@@ -24,7 +24,7 @@ import pickle
 import time
 import warnings
 warnings.filterwarnings('ignore')
-data_dir = "/content/drive/MyDrive/streamlit-hatefulmemedection/"
+data_dir = "./streamlit-hatefulmemedection/"
 SLANG_PATH = data_dir+"static/slang.txt"
 import webbrowser # inbuilt module
 
